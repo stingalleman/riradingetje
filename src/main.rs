@@ -19,6 +19,6 @@ fn main() {
         let telegram = x.to_telegram().unwrap();
         let state = dsmr5::Result::<dsmr5::state::State>::from(&telegram).unwrap();
 
-        println!("{:?}", state);
+        println!("{:?}", state.tariff_indicator.unwrap());
     }
 }
