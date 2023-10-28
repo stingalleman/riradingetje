@@ -95,7 +95,7 @@ async fn main() -> tokio_serial::Result<()> {
         }
 
         if line.contains("0-0:1.0.0") {
-            let x = get_value(line);
+            let x = get_value(line).strip_suffix("S").unwrap().to_string();
             println!("{}", x);
             buf.timestamp = x.parse().unwrap();
         }
