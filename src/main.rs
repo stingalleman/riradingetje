@@ -119,9 +119,8 @@ fn main() {
     let reader = dsmr5::Reader::new(port.bytes());
 
     for readout in reader {
-        let x = readout.unwrap();
-        let telegram = x.to_telegram().unwrap();
-        let state = dsmr5::Result::<dsmr5::state::State>::from(&telegram).unwrap();
+        let x = readout.unwrap().to_telegram().unwrap();
+        let state = dsmr5::Result::<dsmr5::state::State>::from(&x).unwrap();
 
         println!("{}", state.power_delivered.unwrap());
     }
