@@ -95,6 +95,7 @@ async fn main() -> tokio_serial::Result<()> {
             panic!("finished");
         }
 
+        println!("{}", line);
         let parameter = &line[0..line.find("(").unwrap()];
         println!("{}", parameter);
 
