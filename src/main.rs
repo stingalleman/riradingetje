@@ -3,7 +3,7 @@ use std::time::Duration;
 fn main() {
     println!("running");
     let mut port = serialport::new("/dev/ttyUSB0", 115_200)
-        .timeout(Duration::from_millis(1000))
+        .timeout(Duration::from_millis(10000))
         .parity(serialport::Parity::Even)
         .stop_bits(serialport::StopBits::One)
         .data_bits(serialport::DataBits::Seven)
