@@ -10,4 +10,6 @@ fn main() {
     let mut serial_buf: Vec<u8> = vec![0; 32];
     port.read(serial_buf.as_mut_slice())
         .expect("Found no data!");
+
+    println!("{:?}", serial_buf);
 }
