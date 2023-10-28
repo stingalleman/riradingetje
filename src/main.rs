@@ -77,10 +77,10 @@ async fn main() -> tokio_serial::Result<()> {
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
 
-        if line.len() == 0 || line.contains(char::is_whitespace) {
-            println!("whitespace, {}", line.contains(char::is_whitespace));
-            continue;
-        }
+        // if line.len() == 0 || line.contains(char::is_whitespace) {
+        //     println!("whitespace, {}", line.contains(char::is_whitespace));
+        //     continue;
+        // }
 
         if line.contains("/") {
             buf = DSMR {
@@ -100,9 +100,9 @@ async fn main() -> tokio_serial::Result<()> {
             continue;
         }
 
-        println!("{} - {}", line, line.len());
-        let parameter = &line[0..line.find("(").unwrap()];
-        println!("{}", parameter);
+        // println!("{} - {}", line, line.len());
+        // let parameter = &line[0..line.find("(").unwrap()];
+        // println!("{}", parameter);
 
         if line.contains("0-0:1.0.0") {
             let x = get_value(line).strip_suffix("S").unwrap().to_string();
