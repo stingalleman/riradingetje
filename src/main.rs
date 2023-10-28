@@ -5,6 +5,7 @@ use tokio_util::codec::Decoder;
 use bytes::BytesMut;
 use tokio_serial::SerialPortBuilderExt;
 
+#[derive(Debug)]
 struct DSMR {
     version: u8,
     // YYMMDDhhmm, ssX
@@ -82,6 +83,7 @@ async fn main() -> tokio_serial::Result<()> {
             };
         } else if line.contains("!") {
             println!("finished");
+            println!("{:?}", buf);
         }
 
         if line.contains("0-0:1.0.0") {
