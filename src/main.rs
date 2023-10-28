@@ -5,6 +5,18 @@ use tokio_util::codec::Decoder;
 use bytes::BytesMut;
 use tokio_serial::SerialPortBuilderExt;
 
+struct DSMR {
+    version: u8,
+    // YYMMDDhhmm, ssX
+    timestamp: u64,
+    delivered_1: f64,
+    delivered_2: f64,
+    tarief: u8,
+    delivered: f64,
+    voltage: f32,
+    current: f32,
+    instantaneous_power: f64,
+}
 struct LineCodec;
 
 impl Decoder for LineCodec {
@@ -41,8 +53,36 @@ async fn main() -> tokio_serial::Result<()> {
 
     let mut reader = LineCodec.framed(port);
 
+    let mut buf: DSMR;
+
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
+
+        if line.contains("/") {
+            buf = DSMR {
+                version: 0,
+                timestamp: 0,
+                delivered_1: 0.0,
+                delivered_2: 0.0,
+                tarief: 0,
+                delivered: 0.0,
+                voltage: 0.0,
+                current: 0.0,
+                instantaneous_power: 0.0,
+            };
+        } else if line.contains("!") {
+            println!("finished");
+        }
+
+        if line.contains("0-0:1.0.0") {
+            let mut start = line.find("(").unwrap_or(0);
+            if start != 0 {
+                start = start + 1;
+            }
+            let end = line.find(")").unwrap_or(line.len());
+            let res = &line[start..end];
+            println!("{}", res)
+        }
         // let mut start = line.find("(").unwrap_or(0);
         // if start != 0 {
         //     start = start + 1;
