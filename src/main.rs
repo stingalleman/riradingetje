@@ -115,7 +115,7 @@
 use std::io::Read;
 
 fn main() {
-    let mut port = serial::open("/dev/ttyUSB0").unwrap();
+    let mut port = serial::open(&"/dev/ttyUSB0").unwrap();
     let reader = dsmr5::Reader::new(port.bytes());
 
     for readout in reader {
