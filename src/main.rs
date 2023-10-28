@@ -30,9 +30,9 @@ async fn main() -> tokio_serial::Result<()> {
     let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
 
     let mut port = tokio_serial::new(tty_path, 115200)
-        .data_bits(tokio_serial::DataBits::Seven)
+        .data_bits(tokio_serial::DataBits::Eight)
         .stop_bits(tokio_serial::StopBits::One)
-        .parity(tokio_serial::Parity::Even)
+        .parity(tokio_serial::Parity::None)
         .open_native_async()?;
 
     #[cfg(unix)]
