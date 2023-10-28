@@ -14,7 +14,5 @@ fn main() {
     port.read(serial_buf.as_mut_slice())
         .expect("Found no data!");
 
-    for x in serial_buf {
-        print!("{}", x);
-    }
+    println!("{}", String::from_utf8(serial_buf).unwrap());
 }
