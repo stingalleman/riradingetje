@@ -77,6 +77,10 @@ async fn main() -> tokio_serial::Result<()> {
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
 
+        if line.len() == 0 {
+            continue;
+        }
+
         if line.contains("/") {
             buf = DSMR {
                 version: 0,
@@ -92,7 +96,7 @@ async fn main() -> tokio_serial::Result<()> {
         } else if line.contains("!") {
             // println!("finished");
             println!("{:?}", buf);
-            panic!("finished");
+            continue;
         }
 
         println!("{}", line);
