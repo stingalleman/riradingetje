@@ -91,7 +91,6 @@ async fn main() -> tokio_serial::Result<()> {
         // let res = &line[start..end];
 
         // println!("{}", res)
-        print!("{}", line)
 
         //         let start_bytes = line.find("pattern").unwrap_or(0); //index where "pattern" starts
         //                                                      // or beginning of line if
