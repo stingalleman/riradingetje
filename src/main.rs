@@ -78,6 +78,7 @@ async fn main() -> tokio_serial::Result<()> {
         let line = line_result.expect("Failed to read line");
 
         if line.len() == 0 || line.contains(char::is_whitespace) {
+            println!("whitespace, {}", line.contains(char::is_whitespace));
             continue;
         }
 
