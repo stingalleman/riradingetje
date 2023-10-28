@@ -99,7 +99,7 @@ async fn main() -> tokio_serial::Result<()> {
             continue;
         }
 
-        println!("{}", line);
+        println!("{} - {}", line, line.len());
         let parameter = &line[0..line.find("(").unwrap()];
         println!("{}", parameter);
 
