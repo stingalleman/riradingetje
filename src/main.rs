@@ -1,5 +1,5 @@
 use futures::stream::StreamExt;
-use std::{env, io, str};
+use std::{ascii, env, io, str};
 use tokio_util::codec::Decoder;
 
 use bytes::BytesMut;
@@ -77,7 +77,7 @@ async fn main() -> tokio_serial::Result<()> {
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
 
-        if line.len() == 0 {
+        if line.len() == 0 || line.contains(char::is_whitespace) {
             continue;
         }
 
