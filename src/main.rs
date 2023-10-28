@@ -43,7 +43,19 @@ async fn main() -> tokio_serial::Result<()> {
 
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
-        print!("{}", line);
+        let start = line.find("(").unwrap_or(0);
+        let end = line.find(")").unwrap_or(line.len());
+        let res = &line[start..end];
+
+        print!("{} - {}", line, res)
+
+        //         let start_bytes = line.find("pattern").unwrap_or(0); //index where "pattern" starts
+        //                                                      // or beginning of line if
+        //                                                      // "pattern" not found
+        // let end_bytes = line.find("<").unwrap_or(line.len()); //index where "<" is found
+        //                                                       // or end of line
+
+        // let result = &line[start_bytes..end_bytes]; //slicing line, returns patterndf1老虎23
     }
     Ok(())
 }
