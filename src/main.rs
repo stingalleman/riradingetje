@@ -90,13 +90,16 @@ async fn main() -> tokio_serial::Result<()> {
                 instantaneous_power: 0.0,
             };
         } else if line.contains("!") {
-            println!("finished");
+            // println!("finished");
             println!("{:?}", buf);
+            panic!("finished");
         }
+
+        let parameter = &line[0..line.find("(").unwrap()];
+        println!("{}", parameter);
 
         if line.contains("0-0:1.0.0") {
             let x = get_value(line).strip_suffix("S").unwrap().to_string();
-            println!("{}", x);
             buf.timestamp = x.parse().unwrap();
         }
     }
