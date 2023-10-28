@@ -42,7 +42,11 @@ async fn main() -> tokio_serial::Result<()> {
     let mut args = env::args();
     let tty_path = args.nth(1).unwrap_or_else(|| DEFAULT_TTY.into());
 
-    let mut port = tokio_serial::new(tty_path, 9600).open_native_async()?;
+    let mut port = tokio_serial::new(tty_path, 115200)
+        .data_bits(tokio_serial::DataBits::Seven)
+        .stop_bits(tokio_serial::StopBits::One)
+        .parity(tokio_serial::Parity::Even)
+        .open_native_async()?;
 
     #[cfg(unix)]
     port.set_exclusive(false)
