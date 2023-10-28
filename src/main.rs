@@ -43,9 +43,12 @@ async fn main() -> tokio_serial::Result<()> {
 
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
-        let start = line.find("(").unwrap_or(0);
+        let mut start = line.find("(").unwrap_or(0);
+        if start != 0 {
+            start = start + 1;
+        }
         let end = line.find(")").unwrap_or(line.len());
-        let res = &line[start + 1..end];
+        let res = &line[start..end];
 
         println!("{}", res)
 
