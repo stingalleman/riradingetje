@@ -81,7 +81,7 @@ async fn main() -> tokio_serial::Result<()> {
             }
             let end = line.find(")").unwrap_or(line.len());
             let res = &line[start..end];
-            println!("{}", res.to_string().pop().unwrap())
+            println!("{}", res.to_string().strip_suffix("s").unwrap())
         }
         // let mut start = line.find("(").unwrap_or(0);
         // if start != 0 {
