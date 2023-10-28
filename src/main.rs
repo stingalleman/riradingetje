@@ -10,7 +10,7 @@ fn main() {
         .open()
         .expect("Failed to open port");
 
-    let mut serial_buf: Vec<u8> = vec![0; 2048];
+    let mut serial_buf: Vec<u8> = vec![0; 20480];
     port.read(serial_buf.as_mut_slice())
         .expect("Found no data!");
 
