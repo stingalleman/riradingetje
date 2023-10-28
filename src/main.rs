@@ -37,6 +37,14 @@ impl Decoder for LineCodec {
     }
 }
 
+fn get_value(str: String) -> String {
+    let start = str.find("(").unwrap() + 1;
+    let end = str.find(")").unwrap();
+    let res = &str[start..end];
+
+    res.to_string()
+}
+
 #[tokio::main]
 async fn main() -> tokio_serial::Result<()> {
     let mut args = env::args();
@@ -87,32 +95,8 @@ async fn main() -> tokio_serial::Result<()> {
         }
 
         if line.contains("0-0:1.0.0") {
-            let mut start = line.find("(").unwrap_or(0);
-            if start != 0 {
-                start = start + 1;
-            }
-            let end = line.find(")").unwrap_or(line.len());
-            let res = &line[start..end];
-            let x = res.to_string().strip_suffix("S").unwrap().to_string();
-
-            buf.timestamp = x.parse().unwrap();
+            buf.timestamp = get_value(line).parse().unwrap();
         }
-        // let mut start = line.find("(").unwrap_or(0);
-        // if start != 0 {
-        //     start = start + 1;
-        // }
-        // let end = line.find(")").unwrap_or(line.len());
-        // let res = &line[start..end];
-
-        // println!("{}", res)
-
-        //         let start_bytes = line.find("pattern").unwrap_or(0); //index where "pattern" starts
-        //                                                      // or beginning of line if
-        //                                                      // "pattern" not found
-        // let end_bytes = line.find("<").unwrap_or(line.len()); //index where "<" is found
-        //                                                       // or end of line
-
-        // let result = &line[start_bytes..end_bytes]; //slicing line, returns patterndf1老虎23
     }
     Ok(())
 }
