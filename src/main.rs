@@ -14,5 +14,7 @@ fn main() {
     port.read(serial_buf.as_mut_slice())
         .expect("Found no data!");
 
-    println!("{:?}", serial_buf);
+    for x in serial_buf {
+        print!("{}", x);
+    }
 }
