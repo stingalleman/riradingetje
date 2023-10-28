@@ -53,7 +53,17 @@ async fn main() -> tokio_serial::Result<()> {
 
     let mut reader = LineCodec.framed(port);
 
-    let mut buf: DSMR;
+    let mut buf: DSMR = DSMR {
+        version: 0,
+        timestamp: 0,
+        delivered_1: 0.0,
+        delivered_2: 0.0,
+        tarief: 0,
+        delivered: 0.0,
+        voltage: 0.0,
+        current: 0.0,
+        instantaneous_power: 0.0,
+    };
 
     while let Some(line_result) = reader.next().await {
         let line = line_result.expect("Failed to read line");
@@ -81,7 +91,9 @@ async fn main() -> tokio_serial::Result<()> {
             }
             let end = line.find(")").unwrap_or(line.len());
             let res = &line[start..end];
-            println!("{}", res.to_string().strip_suffix("S").unwrap())
+            let x = res.to_string().strip_suffix("S").unwrap().to_string();
+
+            buf.timestamp = x.parse().unwrap();
         }
         // let mut start = line.find("(").unwrap_or(0);
         // if start != 0 {
