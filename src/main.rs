@@ -53,12 +53,18 @@ async fn main() {
         let current: i64 = state.lines[0].current.unwrap() as i64;
         let active_power_plus = state.lines[0].active_power_plus.unwrap();
         let tariff = state.tariff_indicator.unwrap();
+        if tariff[0] == 1 {
+            println!("0")
+        } else if tariff[1] == 1 {
+            println!("1")
+        }
 
         let points = vec![DataPoint::builder("meter")
             .field("power_delivered", power_delivered)
             .field("voltage", voltage)
             .field("current", current)
             .field("active_power_plus", active_power_plus)
+            // .field("tariff", tariff)
             .timestamp(timestamp)
             .build()
             .unwrap()];
