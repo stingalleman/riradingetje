@@ -1,7 +1,9 @@
 use std::env;
 use std::time::Duration;
 
+use chrono::Local;
 use chrono::NaiveDate;
+use chrono::Offset;
 use chrono::TimeZone;
 use futures::prelude::*;
 use influxdb2::models::DataPoint;
@@ -35,7 +37,7 @@ async fn main() {
         let state_timestamp = state.datetime.unwrap();
         let year: i32 = state_timestamp.year.into();
 
-        let timestamp = chrono::Local
+        let timestamp: chrono::DateTime<Local> = chrono::Local
             .with_ymd_and_hms(
                 year + 2000,
                 state_timestamp.month.into(),
@@ -44,20 +46,29 @@ async fn main() {
                 state_timestamp.minute.into(),
                 state_timestamp.second.into(),
             )
-            .unwrap()
-            .timestamp_nanos_opt()
             .unwrap();
+        // .timestamp_nanos_opt()
+        // .unwrap();
+        println!(
+            "{}",
+            Local
+                .timestamp_opt(0, 0)
+                .unwrap()
+                .offset()
+                .fix()
+                .local_minus_utc()
+        );
 
-        let power_delivered = state.power_delivered.unwrap();
-        println!("{}", timestamp);
+        // let power_delivered = state.power_delivered.unwrap();
+        // println!("{}", timestamp);
 
-        let points = vec![DataPoint::builder("cpu")
-            .tag("host", "thuis")
-            .field("power_delivered", power_delivered)
-            .timestamp(timestamp)
-            .build()
-            .unwrap()];
+        // let points = vec![DataPoint::builder("cpu")
+        //     .tag("host", "thuis")
+        //     .field("power_delivered", power_delivered)
+        //     .timestamp(timestamp)
+        //     .build()
+        //     .unwrap()];
 
-        client.write(bucket, stream::iter(points)).await.unwrap();
+        // client.write(bucket, stream::iter(points)).await.unwrap();
     }
 }
