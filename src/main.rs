@@ -21,7 +21,7 @@ async fn main() {
         .data_bits(serialport::DataBits::Eight)
         .stop_bits(serialport::StopBits::One)
         .parity(serialport::Parity::None)
-        .timeout(Duration::from_millis(2000))
+        .timeout(Duration::from_millis(20000))
         .open()
         .expect("Failed to open port");
 
@@ -61,19 +61,13 @@ async fn main() {
 
         println!("{}", timestamp);
 
-        let points = vec![
-            DataPoint::builder("cpu")
-                .tag("host", "server01")
-                .field("usage", 0.5)
-                .build()
-                .unwrap(),
-            DataPoint::builder("cpu")
-                .tag("host", "server01")
-                .tag("region", "us-west")
-                .field("usage", 0.87)
-                .build()
-                .unwrap(),
-        ];
+        let power_delivered = state.power_delivered.unwrap();
+
+        let points = vec![DataPoint::builder("cpu")
+            .tag("host", "thuis")
+            .field("power_delivered", power_delivered)
+            .build()
+            .unwrap()];
 
         client.write(bucket, stream::iter(points)).await.unwrap();
     }
