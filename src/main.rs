@@ -16,7 +16,7 @@ async fn main() {
 
     let sched = JobScheduler::new().await.unwrap();
 
-    let job = Job::new("* * * * *", |_uuid, _lock| {
+    let job = Job::new("* * * * * * *", |_uuid, _lock| {
         Box::pin(async move {
             println!("{:?} Hi I ran", chrono::Utc::now());
         });
