@@ -16,13 +16,15 @@ async fn main() {
 
     let sched = JobScheduler::new().await.unwrap();
 
-    let job = Job::new("* * * * * * *", |_uuid, _lock| {
-        Box::pin(async move {
-            println!("{:?} Hi I ran", chrono::Utc::now());
-        });
-    })
-    .unwrap();
-    sched.add(job).await.unwrap();
+    sched
+        .add(
+            Job::new("1/10 * * * * *", |uuid, l| {
+                println!("I run every 10 seconds");
+            })
+            .unwrap(),
+        )
+        .await
+        .unwrap();
 
     println!("{} - {}", tty_path, token);
     let bucket = "test2";
