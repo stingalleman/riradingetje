@@ -8,7 +8,7 @@ use influxdb2::Client;
 async fn main() {
     let mut args = env::args();
     let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
-    let token = args.nth(2).unwrap();
+    let token = args.nth(1).unwrap();
 
     println!("{} - {}", tty_path, token);
     let bucket = "test";
