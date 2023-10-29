@@ -37,7 +37,7 @@ async fn main() {
         let state_timestamp = state.datetime.unwrap();
         let year: i32 = state_timestamp.year.into();
 
-        let timestamp: chrono::DateTime<Local> = chrono::Local
+        let timestamp = chrono::Local
             .with_ymd_and_hms(
                 year + 2000,
                 state_timestamp.month.into(),
