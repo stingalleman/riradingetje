@@ -49,7 +49,7 @@ async fn main() {
             .unwrap();
 
         let power_delivered = state.power_delivered.unwrap();
-        let voltage = state.lines[0].voltage.unwrap();
+        let voltage = state.lines[1].voltage.unwrap();
         println!("{}", voltage);
 
         let points = vec![DataPoint::builder("meter")
