@@ -51,16 +51,15 @@ async fn main() {
             .unwrap();
         println!("{}", timestamp);
 
-        // let power_delivered = state.power_delivered.unwrap();
-        // println!("{}", timestamp);
+        let power_delivered = state.power_delivered.unwrap();
+        println!("{}", timestamp);
 
-        // let points = vec![DataPoint::builder("cpu")
-        //     .tag("host", "thuis")
-        //     .field("power_delivered", power_delivered)
-        //     .timestamp(timestamp)
-        //     .build()
-        //     .unwrap()];
+        let points = vec![DataPoint::builder("meter")
+            .field("power_delivered", power_delivered)
+            .timestamp(timestamp)
+            .build()
+            .unwrap()];
 
-        // client.write(bucket, stream::iter(points)).await.unwrap();
+        client.write(bucket, stream::iter(points)).await.unwrap();
     }
 }
