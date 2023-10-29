@@ -61,12 +61,19 @@ async fn main() {
 
         println!("{}", timestamp);
 
-        let points: Vec<DataPoint> = vec![DataPoint::builder("meter")
-            .tag("host", "server01")
-            .field("power_delivered", state.power_delivered.unwrap())
-            .timestamp(timestamp)
-            .build()
-            .unwrap()];
+        let points = vec![
+            DataPoint::builder("cpu")
+                .tag("host", "server01")
+                .field("usage", 0.5)
+                .build()
+                .unwrap(),
+            DataPoint::builder("cpu")
+                .tag("host", "server01")
+                .tag("region", "us-west")
+                .field("usage", 0.87)
+                .build()
+                .unwrap(),
+        ];
 
         client.write(bucket, stream::iter(points)).await.unwrap();
     }

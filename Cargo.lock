@@ -1037,6 +1037,8 @@ dependencies = [
  "dsmr5",
  "futures",
  "influxdb2",
+ "influxdb2-structmap",
+ "num-traits",
  "serialport",
  "tokio",
 ]

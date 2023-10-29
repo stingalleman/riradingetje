@@ -9,6 +9,8 @@ dsmr5 = "0.3.0"
 futures = "0.3.29"
 influxdb2 = "0.4.4"
 serialport = "4.2.2"
+influxdb2-structmap = "0.2"
+num-traits = "0.2"
 tokio = { version = "1.33.0", features = [
   "full",
 ] }
