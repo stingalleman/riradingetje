@@ -49,7 +49,7 @@ async fn main() {
             .unwrap();
         // .timestamp_nanos_opt()
         // .unwrap();
-        println!("{}", timestamp);
+        println!("{}", timestamp.timestamp());
 
         // let power_delivered = state.power_delivered.unwrap();
         // println!("{}", timestamp);
