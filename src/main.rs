@@ -52,25 +52,50 @@ async fn main() {
         let voltage = state.lines[0].voltage.unwrap();
         let current: i64 = state.lines[0].current.unwrap() as i64;
         let active_power_plus = state.lines[0].active_power_plus.unwrap();
+
         let tariff_indicator = state.tariff_indicator.unwrap();
         let tariff: u8;
-        if tariff_indicator[1] == 1 {
+        if tariff_indicator[0] == 1 {
             tariff = 1;
-        } else if tariff_indicator[2] == 1 {
+        } else if tariff_indicator[1] == 1 {
             tariff = 2;
         } else {
             tariff = 3;
         }
 
-        let points = vec![DataPoint::builder("meter")
-            .field("power_delivered", power_delivered)
-            .field("voltage", voltage)
-            .field("current", current)
-            .field("active_power_plus", active_power_plus)
-            .field("tariff", tariff as i64)
-            .timestamp(timestamp)
-            .build()
-            .unwrap()];
+        let gas_state_timestamp = state.slaves[0].meter_reading.unwrap().0;
+
+        let gas_timestamp = chrono::Local
+            .with_ymd_and_hms(
+                year + 2000,
+                gas_state_timestamp.month.into(),
+                gas_state_timestamp.day.into(),
+                gas_state_timestamp.hour.into(),
+                gas_state_timestamp.minute.into(),
+                gas_state_timestamp.second.into(),
+            )
+            .unwrap()
+            .timestamp_nanos_opt()
+            .unwrap();
+
+        let gas = state.slaves[0].meter_reading.unwrap().1;
+
+        let points = vec![
+            DataPoint::builder("meter")
+                .field("power_delivered", power_delivered)
+                .field("voltage", voltage)
+                .field("current", current)
+                .field("active_power_plus", active_power_plus)
+                .field("tariff", tariff as i64)
+                .timestamp(timestamp)
+                .build()
+                .unwrap(),
+            DataPoint::builder("gas-meter")
+                .field("gas", gas)
+                .timestamp(gas_timestamp)
+                .build()
+                .unwrap(),
+        ];
 
         client.write(bucket, stream::iter(points)).await.unwrap();
     }

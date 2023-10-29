@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4.31"
-dsmr5 = "0.3.0"
+dsmr5 = { path = "./dsmr5-master" }
 futures = "0.3.29"
 influxdb2 = "0.4.4"
 serialport = "4.2.2"
