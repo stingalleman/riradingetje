@@ -33,8 +33,10 @@ async fn main() {
         let state = dsmr5::Result::<dsmr5::state::State>::from(&telegram).unwrap();
 
         let state_timestamp = state.datetime.unwrap();
+        let year: i32 = state_timestamp.year.into();
+
         let timestamp = NaiveDate::from_ymd_opt(
-            state_timestamp.year.into(),
+            year + 2000,
             state_timestamp.month.into(),
             state_timestamp.day.into(),
         )
@@ -49,7 +51,7 @@ async fn main() {
 
         println!(
             "{} {} {} {} {} {}",
-            state_timestamp.year,
+            year,
             state_timestamp.month,
             state_timestamp.day,
             state_timestamp.hour,
