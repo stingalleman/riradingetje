@@ -4,24 +4,17 @@ async fn main() {
     use influxdb2::models::DataPoint;
     use influxdb2::Client;
 
-    let org = std::env::var("INFLUXDB_ORG").unwrap();
     let token = std::env::var("INFLUXDB_TOKEN").unwrap();
-    let bucket = "bucket";
-    let client = Client::new("https://influxdb.stingalleman.dev", org, token);
+    let bucket = "test";
+    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
-    let points = vec![
-        DataPoint::builder("cpu")
-            .tag("host", "server01")
-            .field("usage", 0.5)
-            .build();
-        DataPoint::builder("cpu")
-            .tag("host", "server01")
-            .tag("region", "us-west")
-            .field("usage", 0.87)
-            .build()
-    ];
+    let points = vec![DataPoint::builder("cpu")
+        .tag("host", "server01")
+        .field("usage", 0.5)
+        .build()
+        .unwrap()];
 
-    client.write(bucket, stream::iter(points)).await?;
+    client.write(bucket, stream::iter(points)).await.unwrap();
 
     // let mut args = env::args();
     // let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
