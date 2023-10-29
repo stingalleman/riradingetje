@@ -50,7 +50,7 @@ async fn main() {
         .timestamp();
 
         let power_delivered = state.power_delivered.unwrap();
-        println!("{}", power_delivered);
+        println!("{}", timestamp);
 
         let points = vec![DataPoint::builder("cpu")
             .tag("host", "thuis")
