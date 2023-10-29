@@ -1,10 +1,15 @@
+use std::env;
+
+use futures::prelude::*;
+use influxdb2::models::DataPoint;
+use influxdb2::Client;
+
 #[tokio::main]
 async fn main() {
-    use futures::prelude::*;
-    use influxdb2::models::DataPoint;
-    use influxdb2::Client;
+    let mut args = env::args();
+    let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
+    let token = args.nth(2).unwrap();
 
-    let token = std::env::var("INFLUXDB_TOKEN").unwrap();
     let bucket = "test";
     let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
@@ -15,9 +20,6 @@ async fn main() {
         .unwrap()];
 
     client.write(bucket, stream::iter(points)).await.unwrap();
-
-    // let mut args = env::args();
-    // let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
 
     // let port = serialport::new(tty_path, 115_200)
     //     .data_bits(serialport::DataBits::Eight)
