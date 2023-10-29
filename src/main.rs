@@ -56,7 +56,7 @@ async fn main() {
         let points = vec![DataPoint::builder("cpu")
             .tag("host", "thuis")
             .field("power_delivered", power_delivered)
-            .timestamp(timestamp)
+            // .timestamp(timestamp)
             .build()
             .unwrap()];
 
