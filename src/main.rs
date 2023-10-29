@@ -6,9 +6,9 @@ use influxdb2::Client;
 
 #[tokio::main]
 async fn main() {
-    let mut args = env::args();
-    let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
-    let token = args.nth(1).unwrap();
+    let args: Vec<String> = env::args().collect();
+    let tty_path = &args[1];
+    let token = &args[2];
 
     println!("{} - {}", tty_path, token);
     let bucket = "test";
