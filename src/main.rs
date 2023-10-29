@@ -1,14 +1,12 @@
 use std::env;
 use std::time::Duration;
 
-use chrono::Local;
-use chrono::NaiveDate;
-use chrono::Offset;
 use chrono::TimeZone;
 use futures::prelude::*;
 use influxdb2::models::DataPoint;
 use influxdb2::Client;
 use std::io::Read;
+
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
@@ -49,10 +47,10 @@ async fn main() {
             .unwrap()
             .timestamp_nanos_opt()
             .unwrap();
-        println!("{}", timestamp);
 
         let power_delivered = state.power_delivered.unwrap();
-        println!("{}", timestamp);
+        let voltage = state.lines[0].voltage.unwrap();
+        println!("{}", voltage);
 
         let points = vec![DataPoint::builder("meter")
             .field("power_delivered", power_delivered)
