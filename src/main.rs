@@ -49,19 +49,8 @@ async fn main() {
         .unwrap()
         .timestamp();
 
-        println!(
-            "{} {} {} {} {} {}",
-            year,
-            state_timestamp.month,
-            state_timestamp.day,
-            state_timestamp.hour,
-            state_timestamp.minute,
-            state_timestamp.second
-        );
-
-        println!("{}", timestamp);
-
         let power_delivered = state.power_delivered.unwrap();
+        println!("{}", power_delivered);
 
         let points = vec![DataPoint::builder("cpu")
             .tag("host", "thuis")
