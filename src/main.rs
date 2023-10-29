@@ -47,6 +47,8 @@ async fn main() {
             state_timestamp.second.into(),
         )
         .unwrap()
+        .and_local_timezone(chrono_tz::Europe::Amsterdam)
+        .unwrap()
         .timestamp_nanos_opt()
         .unwrap();
 
