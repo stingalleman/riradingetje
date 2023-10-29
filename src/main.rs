@@ -6,12 +6,23 @@ use futures::prelude::*;
 use influxdb2::models::DataPoint;
 use influxdb2::Client;
 use std::io::Read;
+use tokio_cron_scheduler::{Job, JobScheduler};
 
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
     let tty_path = &args[1];
     let token = &args[2];
+
+    let sched = JobScheduler::new().await.unwrap();
+
+    let job = Job::new("* * * * *", |_uuid, _lock| {
+        Box::pin(async move {
+            println!("{:?} Hi I ran", chrono::Utc::now());
+        });
+    })
+    .unwrap();
+    sched.add(job).await.unwrap();
 
     println!("{} - {}", tty_path, token);
     let bucket = "test2";
