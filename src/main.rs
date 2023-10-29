@@ -49,15 +49,7 @@ async fn main() {
             .unwrap();
         // .timestamp_nanos_opt()
         // .unwrap();
-        println!(
-            "{}",
-            Local
-                .timestamp_opt(0, 0)
-                .unwrap()
-                .offset()
-                .fix()
-                .local_minus_utc()
-        );
+        println!("{}", Local.timestamp_opt(0, 0).unwrap());
 
         // let power_delivered = state.power_delivered.unwrap();
         // println!("{}", timestamp);
