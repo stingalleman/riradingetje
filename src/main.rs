@@ -46,10 +46,10 @@ async fn main() {
                 state_timestamp.minute.into(),
                 state_timestamp.second.into(),
             )
+            .unwrap()
+            .timestamp_nanos_opt()
             .unwrap();
-        // .timestamp_nanos_opt()
-        // .unwrap();
-        println!("{}", timestamp.timestamp());
+        println!("{}", timestamp);
 
         // let power_delivered = state.power_delivered.unwrap();
         // println!("{}", timestamp);
