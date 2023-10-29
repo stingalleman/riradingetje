@@ -2,11 +2,11 @@ use std::env;
 use std::time::Duration;
 
 use chrono::NaiveDate;
+use chrono::TimeZone;
 use futures::prelude::*;
 use influxdb2::models::DataPoint;
 use influxdb2::Client;
 use std::io::Read;
-
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
@@ -35,22 +35,18 @@ async fn main() {
         let state_timestamp = state.datetime.unwrap();
         let year: i32 = state_timestamp.year.into();
 
-        let timestamp = NaiveDate::from_ymd_opt(
-            year + 2000,
-            state_timestamp.month.into(),
-            state_timestamp.day.into(),
-        )
-        .unwrap()
-        .and_hms_opt(
-            state_timestamp.hour.into(),
-            state_timestamp.minute.into(),
-            state_timestamp.second.into(),
-        )
-        .unwrap()
-        .and_local_timezone(chrono_tz::Europe::Amsterdam)
-        .unwrap()
-        .timestamp_nanos_opt()
-        .unwrap();
+        let timestamp = chrono::Local
+            .with_ymd_and_hms(
+                year + 2000,
+                state_timestamp.month.into(),
+                state_timestamp.day.into(),
+                state_timestamp.hour.into(),
+                state_timestamp.minute.into(),
+                state_timestamp.second.into(),
+            )
+            .unwrap()
+            .timestamp_nanos_opt()
+            .unwrap();
 
         let power_delivered = state.power_delivered.unwrap();
         println!("{}", timestamp);
