@@ -14,7 +14,7 @@ async fn main() {
     let token = &args[2];
 
     println!("{} - {}", tty_path, token);
-    let bucket = "lab";
+    let bucket = "test2";
     let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
     let port = serialport::new(tty_path, 115_200)
@@ -56,7 +56,7 @@ async fn main() {
         let points = vec![DataPoint::builder("cpu")
             .tag("host", "thuis")
             .field("power_delivered", power_delivered)
-            // .timestamp(timestamp)
+            .timestamp(timestamp)
             .build()
             .unwrap()];
 
