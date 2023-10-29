@@ -47,6 +47,16 @@ async fn main() {
         .unwrap()
         .timestamp();
 
+        println!(
+            "{} {} {} {} {} {}",
+            state_timestamp.year,
+            state_timestamp.month,
+            state_timestamp.day,
+            state_timestamp.hour,
+            state_timestamp.minute,
+            state_timestamp.second
+        );
+
         println!("{}", timestamp);
 
         let points: Vec<DataPoint> = vec![DataPoint::builder("meter")
