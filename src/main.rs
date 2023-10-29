@@ -14,7 +14,7 @@ async fn main() {
     let token = &args[2];
 
     println!("{} - {}", tty_path, token);
-    let bucket = "test-meter";
+    let bucket = "lab";
     let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
     let port = serialport::new(tty_path, 115_200)
