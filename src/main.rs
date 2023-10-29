@@ -47,6 +47,8 @@ async fn main() {
         .unwrap()
         .timestamp();
 
+        println!("{}", timestamp);
+
         let points: Vec<DataPoint> = vec![DataPoint::builder("meter")
             // .tag("host", "server01")
             .field("power_delivered", state.power_delivered.unwrap())
