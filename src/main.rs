@@ -10,6 +10,7 @@ async fn main() {
     let tty_path = args.nth(1).unwrap_or_else(|| "/dev/ttyUSB0".into());
     let token = args.nth(2).unwrap();
 
+    println!("{} - {}", tty_path, token);
     let bucket = "test";
     let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
