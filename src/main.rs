@@ -1,3 +1,6 @@
+mod prices;
+mod utils;
+
 use std::env;
 use std::time::Duration;
 
@@ -5,49 +8,8 @@ use chrono::TimeZone;
 use futures::prelude::*;
 use influxdb2::models::DataPoint;
 use influxdb2::Client;
-use serde::{Deserialize, Serialize};
 use std::io::Read;
 use tokio_cron_scheduler::{Job, JobScheduler};
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct EnergyZeroApi {
-    #[serde(rename = "Prices")]
-    prices: Vec<Price>,
-
-    #[serde(rename = "intervalType")]
-    interval_type: i64,
-
-    #[serde(rename = "average")]
-    average: f64,
-
-    #[serde(rename = "fromDate")]
-    from_date: String,
-
-    #[serde(rename = "tillDate")]
-    till_date: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Price {
-    #[serde(rename = "price")]
-    price: f64,
-
-    #[serde(rename = "readingDate")]
-    reading_date: String,
-}
-
-async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
-    let resp = reqwest::get("https://api.energyzero.nl/v1/energyprices?fromDate=2023-10-28T22%3A00%3A00.000Z&tillDate=2023-10-29T22%3A59%3A59.999Z&interval=4&usageType=1&inclBtw=true")
-        .await?
-        .json::<EnergyZeroApi>()
-        .await?;
-
-    for x in &resp.prices {
-        println!("{} @ {}", x.price, x.reading_date);
-    }
-
-    Ok(resp)
-}
 
 #[tokio::main]
 async fn main() {
@@ -55,25 +17,29 @@ async fn main() {
     let tty_path = &args[1];
     let token = &args[2];
 
+    // setup scheduler for energy prices fetching
     let sched = JobScheduler::new().await.unwrap();
 
     sched
         .add(
             Job::new_async("1/3 * * * * *", |_, _| {
                 Box::pin(async {
-                    get_prices().await.unwrap();
+                    prices::get_prices().await.unwrap();
                 })
             })
             .unwrap(),
         )
         .await
         .unwrap();
+
+    // start scheduler
     sched.start().await.unwrap();
 
-    println!("{} - {}", tty_path, token);
+    // data bucket
     let bucket = "test2";
     let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
+    // setup serial port
     let port = serialport::new(tty_path, 115_200)
         .data_bits(serialport::DataBits::Eight)
         .stop_bits(serialport::StopBits::One)
@@ -89,21 +55,7 @@ async fn main() {
         let telegram = x.to_telegram().unwrap();
         let state = dsmr5::Result::<dsmr5::state::State>::from(&telegram).unwrap();
 
-        let state_timestamp = state.datetime.unwrap();
-        let year: i32 = state_timestamp.year.into();
-
-        let timestamp = chrono::Local
-            .with_ymd_and_hms(
-                year + 2000,
-                state_timestamp.month.into(),
-                state_timestamp.day.into(),
-                state_timestamp.hour.into(),
-                state_timestamp.minute.into(),
-                state_timestamp.second.into(),
-            )
-            .unwrap()
-            .timestamp_nanos_opt()
-            .unwrap();
+        let timestamp = utils::convert_tst(state.datetime.unwrap()).unwrap();
 
         let power_delivered = state.power_delivered.unwrap();
         let voltage = state.lines[0].voltage.unwrap();
@@ -120,20 +72,7 @@ async fn main() {
             tariff = 3;
         }
 
-        let gas_state_timestamp = state.slaves[0].meter_reading.unwrap().0;
-
-        let gas_timestamp = chrono::Local
-            .with_ymd_and_hms(
-                year + 2000,
-                gas_state_timestamp.month.into(),
-                gas_state_timestamp.day.into(),
-                gas_state_timestamp.hour.into(),
-                gas_state_timestamp.minute.into(),
-                gas_state_timestamp.second.into(),
-            )
-            .unwrap()
-            .timestamp_nanos_opt()
-            .unwrap();
+        let gas_timestamp = utils::convert_tst(state.slaves[0].meter_reading.unwrap().0).unwrap();
 
         let gas = state.slaves[0].meter_reading.unwrap().1;
 
