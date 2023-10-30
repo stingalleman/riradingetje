@@ -26,6 +26,8 @@ async fn main() {
         .await
         .unwrap();
 
+    sched.start().await.unwrap();
+
     println!("{} - {}", tty_path, token);
     let bucket = "test2";
     let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
@@ -111,5 +113,6 @@ async fn main() {
         ];
 
         client.write(bucket, stream::iter(points)).await.unwrap();
+        println!("saved!");
     }
 }
