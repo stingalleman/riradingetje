@@ -43,7 +43,7 @@ async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
         .await?;
 
     for x in &resp.prices {
-        println!("{}", x.price);
+        println!("{} @ {}", x.price, x.reading_date);
     }
 
     Ok(resp)
