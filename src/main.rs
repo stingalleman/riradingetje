@@ -19,8 +19,10 @@ async fn main() {
     // 1/10 * * * * *
     sched
         .add(
-            Job::new("1/3 * * * * *", |_, _| {
-                println!("I run every 10 seconds");
+            Job::new_async("1/3 * * * * *", |_, _| {
+                Box::pin(async {
+                    println!("I run every 10 seconds");
+                })
             })
             .unwrap(),
         )
