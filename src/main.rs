@@ -19,10 +19,8 @@ async fn main() {
     // 1/10 * * * * *
     sched
         .add(
-            Job::new("1/10 * * * * *", |_uuid, _lock| {
-                Box::pin(async move {
-                    println!("{:?} Hi I ran", chrono::Utc::now());
-                });
+            Job::new("1/3 * * * * *", |_, _| {
+                println!("I run every 10 seconds");
             })
             .unwrap(),
         )
