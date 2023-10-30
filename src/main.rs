@@ -4,7 +4,6 @@ mod utils;
 use std::env;
 use std::time::Duration;
 
-use chrono::TimeZone;
 use futures::prelude::*;
 use influxdb2::models::DataPoint;
 use influxdb2::Client;
