@@ -8,6 +8,15 @@ use influxdb2::Client;
 use std::io::Read;
 use tokio_cron_scheduler::{Job, JobScheduler};
 
+async fn get_prices() -> Result<(), Box<dyn std::error::Error>> {
+    let resp = reqwest::get("https://httpbin.org/ip")
+        .await?
+        .json::<std::collections::HashMap<String, String>>()
+        .await?;
+    println!("{:#?}", resp);
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
@@ -16,12 +25,11 @@ async fn main() {
 
     let sched = JobScheduler::new().await.unwrap();
 
-    // 1/10 * * * * *
     sched
         .add(
             Job::new_async("1/3 * * * * *", |_, _| {
                 Box::pin(async {
-                    println!("I run every 10 seconds");
+                    get_prices().await.unwrap();
                 })
             })
             .unwrap(),
