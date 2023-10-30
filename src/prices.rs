@@ -1,3 +1,5 @@
+use std::os::unix::fs::chroot;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -28,7 +30,11 @@ pub struct Price {
 }
 
 pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
-    println!("{}", chrono::Utc::now().to_rfc2822());
+    let now = chrono::Utc::now();
+
+    let x = now.date_naive().and_hms_opt(0, 0, 0).unwrap();
+
+    println!("{:?}", x);
 
     let from_date = "2023-10-28T22:00:00.000Z";
 
@@ -41,12 +47,12 @@ pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
 
     for x in &resp.prices {
         let chrono_timestamp = chrono::DateTime::parse_from_rfc3339(&x.reading_date).unwrap();
-        println!(
-            "{} @ {} - {}",
-            x.price,
-            x.reading_date,
-            chrono_timestamp.timestamp()
-        );
+        // println!(
+        //     "{} @ {} - {}",
+        //     x.price,
+        //     x.reading_date,
+        //     chrono_timestamp.timestamp()
+        // );
     }
 
     Ok(resp)
