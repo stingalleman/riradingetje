@@ -5,15 +5,43 @@ use chrono::TimeZone;
 use futures::prelude::*;
 use influxdb2::models::DataPoint;
 use influxdb2::Client;
+use serde::{Deserialize, Serialize};
 use std::io::Read;
 use tokio_cron_scheduler::{Job, JobScheduler};
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Untitled1 {
+    #[serde(rename = "Prices")]
+    prices: Vec<Price>,
+
+    #[serde(rename = "intervalType")]
+    interval_type: i64,
+
+    #[serde(rename = "average")]
+    average: f64,
+
+    #[serde(rename = "fromDate")]
+    from_date: String,
+
+    #[serde(rename = "tillDate")]
+    till_date: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Price {
+    #[serde(rename = "price")]
+    price: f64,
+
+    #[serde(rename = "readingDate")]
+    reading_date: String,
+}
+
 async fn get_prices() -> Result<(), Box<dyn std::error::Error>> {
-    let resp = reqwest::get("https://httpbin.org/ip")
+    let resp = reqwest::get("https://api.energyzero.nl/v1/energyprices?fromDate=2023-10-28T22%3A00%3A00.000Z&tillDate=2023-10-29T22%3A59%3A59.999Z&interval=4&usageType=1&inclBtw=true")
         .await?
-        .json::<std::collections::HashMap<String, String>>()
+        .json::<Untitled1>()
         .await?;
-    println!("{:#?}", resp);
+    println!("{:?}", resp);
     Ok(())
 }
 

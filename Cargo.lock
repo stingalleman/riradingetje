@@ -1087,6 +1087,8 @@ dependencies = [
  "influxdb2-structmap",
  "num-traits",
  "reqwest",
+ "serde",
+ "serde_json",
  "serialport",
  "tokio",
  "tokio-cron-scheduler",
