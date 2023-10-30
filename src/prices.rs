@@ -35,7 +35,12 @@ pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
 
     for x in &resp.prices {
         let chrono_timestamp = chrono::DateTime::parse_from_rfc3339(&x.reading_date).unwrap();
-        println!("{}", chrono_timestamp.timestamp());
+        println!(
+            "{} @ {} - {}",
+            x.price,
+            x.reading_date,
+            chrono_timestamp.timestamp()
+        );
     }
 
     Ok(resp)
