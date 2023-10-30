@@ -1,5 +1,6 @@
 use std::os::unix::fs::chroot;
 
+use chrono::Duration;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -32,9 +33,13 @@ pub struct Price {
 pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
     let now = chrono::Utc::now();
 
-    let x = now.date_naive().and_hms_opt(0, 0, 0).unwrap();
+    let today = now.date_naive().and_hms_opt(0, 0, 0).unwrap();
+    let tomorrow = (now + Duration::days(1))
+        .date_naive()
+        .and_hms_opt(0, 0, 0)
+        .unwrap();
 
-    println!("{:?}", x);
+    println!("{:?} - {:?}", today, tomorrow);
 
     let from_date = "2023-10-28T22:00:00.000Z";
 
