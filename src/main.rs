@@ -25,7 +25,6 @@ async fn main() {
         )
         .await
         .unwrap();
-
     sched.start().await.unwrap();
 
     println!("{} - {}", tty_path, token);
