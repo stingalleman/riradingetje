@@ -10,7 +10,7 @@ use std::io::Read;
 use tokio_cron_scheduler::{Job, JobScheduler};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Untitled1 {
+pub struct EnergyZeroApi {
     #[serde(rename = "Prices")]
     prices: Vec<Price>,
 
@@ -36,13 +36,17 @@ pub struct Price {
     reading_date: String,
 }
 
-async fn get_prices() -> Result<(), Box<dyn std::error::Error>> {
+async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
     let resp = reqwest::get("https://api.energyzero.nl/v1/energyprices?fromDate=2023-10-28T22%3A00%3A00.000Z&tillDate=2023-10-29T22%3A59%3A59.999Z&interval=4&usageType=1&inclBtw=true")
         .await?
-        .json::<Untitled1>()
+        .json::<EnergyZeroApi>()
         .await?;
-    println!("{:?}", resp);
-    Ok(())
+
+    for x in &resp.prices {
+        println!("{}", x.price);
+    }
+
+    Ok(resp)
 }
 
 #[tokio::main]
