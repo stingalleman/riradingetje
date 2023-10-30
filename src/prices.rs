@@ -33,11 +33,17 @@ pub struct Price {
 pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
     let now = chrono::Utc::now();
 
-    let today = now.date_naive().and_hms_opt(0, 0, 0).unwrap();
-    let tomorrow = (now + Duration::days(1))
+    // dt.format("%Y-%m-%d %H:%M:%S").to_string(), "2015-09-05 23:56:04"
+    let today = now
         .date_naive()
         .and_hms_opt(0, 0, 0)
-        .unwrap();
+        .unwrap()
+        .format("%Y-%m-%dT%H:%M:%SZ");
+    let tomorrow = (now + Duration::days(1))
+        .date_naive()
+        .and_hms_opt(23, 59, 59)
+        .unwrap()
+        .format("%Y-%m-%dT%H:%M:%SZ");
 
     println!("{:?} - {:?}", today, tomorrow);
 
