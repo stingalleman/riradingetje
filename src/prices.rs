@@ -38,12 +38,14 @@ pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
         .date_naive()
         .and_hms_opt(0, 0, 0)
         .unwrap()
-        .format("%Y-%m-%dT%H:%M:%SZ");
+        .format("%Y-%m-%dT%H:%M:%SZ")
+        .to_string();
     let tomorrow = (now + Duration::days(1))
         .date_naive()
         .and_hms_opt(23, 59, 59)
         .unwrap()
-        .format("%Y-%m-%dT%H:%M:%SZ");
+        .format("%Y-%m-%dT%H:%M:%SZ")
+        .to_string();
 
     println!("{:?} - {:?}", today, tomorrow);
 
