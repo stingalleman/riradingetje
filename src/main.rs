@@ -17,13 +17,17 @@ async fn main() {
     let sched = JobScheduler::new().await.unwrap();
 
     // 1/10 * * * * *
-    let job = Job::new("1/10 * * * * *", |_uuid, _lock| {
-        Box::pin(async move {
-            println!("{:?} Hi I ran", chrono::Utc::now());
-        });
-    })
-    .unwrap();
-    sched.add(job).await.unwrap();
+    sched
+        .add(
+            Job::new("1/10 * * * * *", |_uuid, _lock| {
+                Box::pin(async move {
+                    println!("{:?} Hi I ran", chrono::Utc::now());
+                });
+            })
+            .unwrap(),
+        )
+        .await
+        .unwrap();
     sched.start().await.unwrap();
 
     println!("{} - {}", tty_path, token);
