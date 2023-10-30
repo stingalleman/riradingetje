@@ -28,7 +28,13 @@ pub struct Price {
 }
 
 pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
-    let resp = reqwest::get("https://api.energyzero.nl/v1/energyprices?fromDate=2023-10-28T22%3A00%3A00.000Z&tillDate=2023-10-29T22%3A59%3A59.999Z&interval=4&usageType=1&inclBtw=true")
+    println!("{}", chrono::Utc::now().to_rfc2822());
+
+    let from_date = "2023-10-28T22:00:00.000Z";
+
+    let till_date = "2023-10-29T22:59:59.999Z";
+
+    let resp = reqwest::get(format!("https://api.energyzero.nl/v1/energyprices?fromDate={}&tillDate={}&interval=4&usageType=1&inclBtw=true", from_date, till_date))
         .await?
         .json::<EnergyZeroApi>()
         .await?;
