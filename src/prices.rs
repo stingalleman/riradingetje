@@ -49,9 +49,9 @@ pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
 
     println!("{:?} - {:?}", today, tomorrow);
 
-    let from_date = "2023-10-28T22:00:00.000Z";
+    let from_date = today;
 
-    let till_date = "2023-10-29T22:59:59.999Z";
+    let till_date = tomorrow;
 
     let resp = reqwest::get(format!("https://api.energyzero.nl/v1/energyprices?fromDate={}&tillDate={}&interval=4&usageType=1&inclBtw=true", from_date, till_date))
         .await?
