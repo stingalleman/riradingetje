@@ -47,10 +47,7 @@ pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
         .format("%Y-%m-%dT%H:%M:%SZ")
         .to_string();
 
-    println!("{:?} - {:?}", today, tomorrow);
-
     let from_date = today;
-
     let till_date = tomorrow;
 
     let resp = reqwest::get(format!("https://api.energyzero.nl/v1/energyprices?fromDate={}&tillDate={}&interval=4&usageType=1&inclBtw=true", from_date, till_date))
@@ -60,12 +57,12 @@ pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
 
     for x in &resp.prices {
         let chrono_timestamp = chrono::DateTime::parse_from_rfc3339(&x.reading_date).unwrap();
-        // println!(
-        //     "{} @ {} - {}",
-        //     x.price,
-        //     x.reading_date,
-        //     chrono_timestamp.timestamp()
-        // );
+        println!(
+            "{} @ {} - {}",
+            x.price,
+            x.reading_date,
+            chrono_timestamp.timestamp()
+        );
     }
 
     Ok(resp)
