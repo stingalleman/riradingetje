@@ -23,7 +23,10 @@ async fn main() {
         .add(
             Job::new_async("1/3 * * * * *", |_, _| {
                 Box::pin(async {
-                    prices::get_prices().await.unwrap();
+                    let x = prices::get_prices().await.unwrap();
+                    for a in x {
+                        println!("{} @ {}", a.price, a.timestamp.to_rfc2822())
+                    }
                 })
             })
             .unwrap(),

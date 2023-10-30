@@ -1,10 +1,8 @@
-use std::os::unix::fs::chroot;
-
-use chrono::Duration;
+use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct EnergyZeroApi {
+struct EnergyZeroApi {
     #[serde(rename = "Prices")]
     prices: Vec<Price>,
 
@@ -22,7 +20,7 @@ pub struct EnergyZeroApi {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Price {
+struct Price {
     #[serde(rename = "price")]
     price: f64,
 
@@ -30,40 +28,42 @@ pub struct Price {
     reading_date: String,
 }
 
-pub async fn get_prices() -> Result<EnergyZeroApi, Box<dyn std::error::Error>> {
+pub struct Prices {
+    pub timestamp: DateTime<Utc>,
+    pub price: f64,
+}
+
+pub async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
     let now = chrono::Utc::now();
 
-    // dt.format("%Y-%m-%d %H:%M:%S").to_string(), "2015-09-05 23:56:04"
-    let today = now
+    let from_date = now
         .date_naive()
         .and_hms_opt(0, 0, 0)
         .unwrap()
         .format("%Y-%m-%dT%H:%M:%SZ")
         .to_string();
-    let tomorrow = (now + Duration::days(1))
+
+    let till_date = (now + Duration::days(1))
         .date_naive()
         .and_hms_opt(23, 59, 59)
         .unwrap()
         .format("%Y-%m-%dT%H:%M:%SZ")
         .to_string();
 
-    let from_date = today;
-    let till_date = tomorrow;
+    let url = format!("https://api.energyzero.nl/v1/energyprices?fromDate={}&tillDate={}&interval=4&usageType=1&inclBtw=true", from_date, till_date);
 
-    let resp = reqwest::get(format!("https://api.energyzero.nl/v1/energyprices?fromDate={}&tillDate={}&interval=4&usageType=1&inclBtw=true", from_date, till_date))
-        .await?
-        .json::<EnergyZeroApi>()
-        .await?;
+    let resp = reqwest::get(url).await?.json::<EnergyZeroApi>().await?;
 
-    for x in &resp.prices {
-        let chrono_timestamp = chrono::DateTime::parse_from_rfc3339(&x.reading_date).unwrap();
-        println!(
-            "{} @ {} - {}",
-            x.price,
-            x.reading_date,
-            chrono_timestamp.timestamp()
-        );
+    let mut buf: Vec<Prices> = vec![];
+
+    for item in &resp.prices {
+        let timestamp = chrono::DateTime::parse_from_rfc3339(&item.reading_date).unwrap();
+
+        buf.push(Prices {
+            timestamp: timestamp.into(),
+            price: item.price,
+        });
     }
 
-    Ok(resp)
+    Ok(buf)
 }
