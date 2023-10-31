@@ -16,6 +16,10 @@ async fn main() {
     let tty_path = &args[1];
     let token = &args[2];
 
+    // data bucket
+    let bucket = "test2";
+    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
+
     // setup scheduler for energy prices fetching
     let sched = JobScheduler::new().await.unwrap();
 
@@ -24,8 +28,19 @@ async fn main() {
             Job::new_async("1/3 * * * * *", |_, _| {
                 Box::pin(async {
                     let x = prices::get_prices().await.unwrap();
-                    for a in x {
-                        println!("{} @ {}", a.price, a.timestamp.to_rfc2822())
+
+                    let mut points: Vec<DataPoint> = vec![];
+
+                    for item in x {
+                        points.push(
+                            DataPoint::builder("meter")
+                                .field("power_delivered", item.price)
+                                .timestamp(item.timestamp.timestamp_nanos_opt().unwrap())
+                                .build()
+                                .unwrap(),
+                        );
+
+                        client.write(bucket, stream::iter(points)).await.unwrap();
                     }
                 })
             })
@@ -36,10 +51,6 @@ async fn main() {
 
     // start scheduler
     sched.start().await.unwrap();
-
-    // data bucket
-    let bucket = "test2";
-    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
 
     // setup serial port
     let port = serialport::new(tty_path, 115_200)
