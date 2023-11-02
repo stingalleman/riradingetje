@@ -8,15 +8,29 @@ use influxdb2::models::DataPoint;
 use influxdb2::Client;
 use std::io::Read;
 use tokio_cron_scheduler::{Job, JobScheduler};
+use utils::InfluxConfig;
 
 #[tokio::main]
 async fn main() {
     let tty_path = std::env::args().nth(1).expect("no tty_path given");
     let token = std::env::args().nth(2).expect("no token given");
 
-    // data bucket
-    let bucket = "test2";
-    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token.clone());
+    let influx_config = InfluxConfig {
+        bucket: "test2".to_string(),
+        org: "lab".to_string(),
+        token,
+        url: "https://influxdb.stingalleman.dev".to_string(),
+    }
+    .clone();
+
+    let binding = influx_config.bucket.clone();
+    let bucket = binding.as_str();
+
+    let client = Client::new(
+        influx_config.url.clone(),
+        influx_config.org.clone(),
+        influx_config.token.clone(),
+    );
 
     // setup scheduler for energy prices fetching
     let sched = JobScheduler::new().await.unwrap();
@@ -24,10 +38,10 @@ async fn main() {
     sched
         .add(
             Job::new_async("1/3 * * * * *", move |_, _| {
-                let token = token.clone();
+                let influx_config = influx_config.clone();
 
                 Box::pin(async move {
-                    prices::publish_prices(token).await;
+                    prices::publish_prices(influx_config).await;
                 })
             })
             .unwrap(),

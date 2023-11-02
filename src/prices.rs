@@ -3,6 +3,8 @@ use futures::stream;
 use influxdb2::{models::DataPoint, Client};
 use serde::{Deserialize, Serialize};
 
+use crate::utils::InfluxConfig;
+
 #[derive(Serialize, Deserialize, Debug)]
 struct EnergyZeroApi {
     #[serde(rename = "Prices")]
@@ -70,9 +72,8 @@ async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
     Ok(buf)
 }
 
-pub async fn publish_prices(token: String) {
-    let bucket = "test2";
-    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
+pub async fn publish_prices(influx_config: InfluxConfig) {
+    let client = Client::new(influx_config.url, "lab", influx_config.token);
 
     let items = get_prices().await.unwrap();
 
@@ -89,5 +90,8 @@ pub async fn publish_prices(token: String) {
         );
     }
 
-    client.write(bucket, stream::iter(points)).await.unwrap();
+    client
+        .write(&influx_config.bucket, stream::iter(points))
+        .await
+        .unwrap();
 }

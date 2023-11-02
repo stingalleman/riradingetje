@@ -1,5 +1,13 @@
 use chrono::TimeZone;
 
+#[derive(Clone)]
+pub struct InfluxConfig {
+    pub url: String,
+    pub bucket: String,
+    pub org: String,
+    pub token: String,
+}
+
 pub fn convert_tst(tst: dsmr5::types::TST) -> Option<i64> {
     let year: i32 = tst.year.into();
 
