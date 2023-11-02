@@ -12,9 +12,8 @@ use tokio_cron_scheduler::{Job, JobScheduler};
 
 #[tokio::main]
 async fn main() {
-    let args: Vec<String> = env::args().collect();
-    let tty_path = &args[1];
-    let token = &args[2];
+    let tty_path = std::env::args().nth(1).expect("no tty_path given");
+    let token = std::env::args().nth(2).expect("no token given");
 
     // data bucket
     let bucket = "test2";
@@ -23,24 +22,24 @@ async fn main() {
     // setup scheduler for energy prices fetching
     let sched = JobScheduler::new().await.unwrap();
 
+    let mut queue: Vec<DataPoint> = vec![];
+    let queueReady: bool = false;
+
     sched
         .add(
-            Job::new_async("1/3 * * * * *", |_, _| {
-                Box::pin(async {
+            Job::new_async("1/3 * * * * *", move |_, _| {
+                let mut queue2 = queue.clone();
+                Box::pin(async move {
                     let x = prices::get_prices().await.unwrap();
 
-                    let mut points: Vec<DataPoint> = vec![];
-
                     for item in x {
-                        points.push(
+                        queue2.push(
                             DataPoint::builder("meter")
                                 .field("power_delivered", item.price)
                                 .timestamp(item.timestamp.timestamp_nanos_opt().unwrap())
                                 .build()
                                 .unwrap(),
                         );
-
-                        client.write(bucket, stream::iter(points)).await.unwrap();
                     }
                 })
             })
