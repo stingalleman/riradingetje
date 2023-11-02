@@ -107,6 +107,5 @@ async fn main() {
         ];
 
         client.write(bucket, stream::iter(points)).await.unwrap();
-        println!("saved!");
     }
 }
