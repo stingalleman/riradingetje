@@ -79,6 +79,7 @@ pub async fn publish_prices(token: String) {
     let mut points: Vec<DataPoint> = vec![];
 
     for item in items {
+        println!("{}", item.price);
         points.push(
             DataPoint::builder("price")
                 .field("energy_price", item.price)
