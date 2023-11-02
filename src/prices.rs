@@ -1,4 +1,6 @@
 use chrono::{DateTime, Duration, Utc};
+use futures::stream;
+use influxdb2::{models::DataPoint, Client};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -33,7 +35,7 @@ pub struct Prices {
     pub price: f64,
 }
 
-pub async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
+async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
     let now = chrono::Utc::now();
 
     let from_date = now
@@ -66,4 +68,25 @@ pub async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
     }
 
     Ok(buf)
+}
+
+pub async fn publish_prices(token: String) {
+    let bucket = "test2";
+    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
+
+    let items = get_prices().await.unwrap();
+
+    let mut points: Vec<DataPoint> = vec![];
+
+    for item in items {
+        points.push(
+            DataPoint::builder("price")
+                .field("energy_price", item.price)
+                .timestamp(item.timestamp.timestamp_nanos_opt().unwrap())
+                .build()
+                .unwrap(),
+        );
+    }
+
+    client.write(bucket, stream::iter(points)).await.unwrap();
 }

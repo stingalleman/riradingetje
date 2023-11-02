@@ -1,7 +1,6 @@
 mod prices;
 mod utils;
 
-use std::env;
 use std::time::Duration;
 
 use futures::prelude::*;
@@ -17,30 +16,18 @@ async fn main() {
 
     // data bucket
     let bucket = "test2";
-    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token);
+    let client = Client::new("https://influxdb.stingalleman.dev", "lab", token.clone());
 
     // setup scheduler for energy prices fetching
     let sched = JobScheduler::new().await.unwrap();
 
-    let mut queue: Vec<DataPoint> = vec![];
-    let queueReady: bool = false;
-
     sched
         .add(
             Job::new_async("1/3 * * * * *", move |_, _| {
-                let mut queue2 = queue.clone();
-                Box::pin(async move {
-                    let x = prices::get_prices().await.unwrap();
+                let token = token.clone();
 
-                    for item in x {
-                        queue2.push(
-                            DataPoint::builder("meter")
-                                .field("power_delivered", item.price)
-                                .timestamp(item.timestamp.timestamp_nanos_opt().unwrap())
-                                .build()
-                                .unwrap(),
-                        );
-                    }
+                Box::pin(async move {
+                    prices::publish_prices(token).await;
                 })
             })
             .unwrap(),
