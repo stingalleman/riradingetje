@@ -16,8 +16,8 @@ async fn main() {
     let token = std::env::args().nth(2).expect("no token given");
 
     let influx_config = InfluxConfig {
-        bucket: "test2".to_string(),
-        org: "lab".to_string(),
+        bucket: "slimme-meter".to_string(),
+        org: "slimme-meter".to_string(),
         token,
         url: "https://influxdb.stingalleman.dev".to_string(),
     }

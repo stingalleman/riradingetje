@@ -73,7 +73,7 @@ async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
 }
 
 pub async fn publish_prices(influx_config: InfluxConfig) {
-    let client = Client::new(influx_config.url, "lab", influx_config.token);
+    let client = Client::new(influx_config.url, influx_config.org, influx_config.token);
 
     let items = get_prices().await.unwrap();
 
