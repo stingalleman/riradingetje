@@ -76,9 +76,8 @@ async fn main() {
         let active_power_plus = state.lines[0].active_power_plus.unwrap();
         let a = state.meterreadings[0].to.unwrap();
         let b = state.meterreadings[1].to.unwrap();
-        let c = state.meterreadings[2].to.unwrap();
 
-        println!("{}, {}, {}", a, b, c);
+        println!("{}, {}, {}", a, b, "a");
 
         let tariff_indicator = state.tariff_indicator.unwrap();
         let tariff: u8;
