@@ -74,10 +74,8 @@ async fn main() {
         let voltage = state.lines[0].voltage.unwrap();
         let current: i64 = state.lines[0].current.unwrap() as i64;
         let active_power_plus = state.lines[0].active_power_plus.unwrap();
-        let a = state.meterreadings[0].to.unwrap();
-        let b = state.meterreadings[1].to.unwrap();
-
-        println!("{}, {}, {}", a, b, "a");
+        let meter_reading_1 = state.meterreadings[0].to.unwrap();
+        let meter_reading_2 = state.meterreadings[1].to.unwrap();
 
         let tariff_indicator = state.tariff_indicator.unwrap();
         let tariff: u8;
@@ -100,7 +98,8 @@ async fn main() {
                 .field("current", current)
                 .field("active_power_plus", active_power_plus)
                 .field("tariff", tariff as i64)
-                .field("x", a)
+                .field("meter_reading_1", meter_reading_1)
+                .field("meter_reading_2", meter_reading_2)
                 .timestamp(timestamp)
                 .build()
                 .unwrap(),
