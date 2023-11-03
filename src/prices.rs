@@ -40,14 +40,14 @@ pub struct Prices {
 async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
     let now = chrono::Utc::now();
 
-    let from_date = now
+    let from_date = (now - Duration::days(1))
         .date_naive()
         .and_hms_opt(0, 0, 0)
         .unwrap()
         .format("%Y-%m-%dT%H:%M:%SZ")
         .to_string();
 
-    let till_date = (now + Duration::days(1))
+    let till_date = now
         .date_naive()
         .and_hms_opt(23, 59, 59)
         .unwrap()
