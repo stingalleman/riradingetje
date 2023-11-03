@@ -56,6 +56,8 @@ async fn get_prices() -> Result<Vec<Prices>, Box<dyn std::error::Error>> {
 
     let url = format!("https://api.energyzero.nl/v1/energyprices?fromDate={}&tillDate={}&interval=4&usageType=1&inclBtw=true", from_date, till_date);
 
+    println!("{}", url);
+
     let resp = reqwest::get(url).await?.json::<EnergyZeroApi>().await?;
 
     let mut buf: Vec<Prices> = vec![];
