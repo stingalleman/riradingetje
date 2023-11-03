@@ -80,7 +80,6 @@ pub async fn publish_prices(influx_config: InfluxConfig) {
     let mut points: Vec<DataPoint> = vec![];
 
     for item in items {
-        println!("{}", item.price);
         points.push(
             DataPoint::builder("price")
                 .field("energy_price", item.price)
@@ -94,4 +93,5 @@ pub async fn publish_prices(influx_config: InfluxConfig) {
         .write(&influx_config.bucket, stream::iter(points))
         .await
         .unwrap();
+    println!("published prices!");
 }

@@ -37,7 +37,7 @@ async fn main() {
 
     sched
         .add(
-            Job::new_async("* 0 * * * *", move |_, _| {
+            Job::new_async("0 * * * * *", move |_, _| {
                 let influx_config = influx_config.clone();
 
                 Box::pin(async move {
