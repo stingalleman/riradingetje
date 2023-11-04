@@ -78,13 +78,20 @@ async fn main() {
         let meter_reading_2 = state.meterreadings[1].to.unwrap();
 
         let tariff_indicator = state.tariff_indicator.unwrap();
+
+        // stroom 1 = daluren
+        // stroom 2 = piekuren
+
+        // indicator[0] = niks
+        // indicator[1] = daltarief
+        // indicator[2] = piektarief
         let tariff: u8;
-        if tariff_indicator[0] == 1 {
-            tariff = 1;
-        } else if tariff_indicator[1] == 1 {
-            tariff = 2;
+        if tariff_indicator[1] == 1 {
+            tariff = 1
+        } else if tariff_indicator[2] == 1 {
+            tariff = 2
         } else {
-            tariff = 3;
+            tariff = 0
         }
 
         let gas_timestamp = utils::convert_tst(state.slaves[0].meter_reading.unwrap().0).unwrap();
