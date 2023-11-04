@@ -73,7 +73,7 @@
             "type": "influxdb",
             "uid": "a1764b20-27e1-4c0d-99c2-6efec636c982"
           },
-          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_delivered\")\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: -1h, stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_delivered\")\n  |> aggregateWindow(every: $__interval, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -130,7 +130,8 @@
             "type": "influxdb",
             "uid": "a1764b20-27e1-4c0d-99c2-6efec636c982"
           },
-          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage\")\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "hide": false,
+          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: -5m, stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage\")\n  |> aggregateWindow(every: $__interval, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -188,7 +189,7 @@
             "type": "influxdb",
             "uid": "a1764b20-27e1-4c0d-99c2-6efec636c982"
           },
-          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"price\")\n  |> filter(fn: (r) => r[\"_field\"] == \"energy_price\")\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: -2h, stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"price\")\n  |> filter(fn: (r) => r[\"_field\"] == \"energy_price\")\n  |> aggregateWindow(every: $__interval, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -281,7 +282,7 @@
             "uid": "a1764b20-27e1-4c0d-99c2-6efec636c982"
           },
           "key": "Q-bbfcbda5-f213-46a0-839f-cf5cfb6fb701-0",
-          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_delivered\")\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_delivered\")\n  |> aggregateWindow(every: $__interval, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -372,7 +373,7 @@
             "uid": "a1764b20-27e1-4c0d-99c2-6efec636c982"
           },
           "key": "Q-bbfcbda5-f213-46a0-839f-cf5cfb6fb701-0",
-          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage\")\n  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage\")\n  |> aggregateWindow(every: $__interval, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -606,7 +607,7 @@
           },
           "decimals": 0,
           "mappings": [],
-          "max": 2.5,
+          "max": 3.5,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -648,7 +649,7 @@
             "type": "influxdb",
             "uid": "a1764b20-27e1-4c0d-99c2-6efec636c982"
           },
-          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tariff\")\n  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"slimme-meter\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tariff\")\n  |> aggregateWindow(every: $__interval, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -664,13 +665,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Amsterdam",
   "title": "slimme meter",
   "uid": "f9cde9e9-6461-4b19-bb2f-6dedb2eedb70",
-  "version": 3,
-  "weekStart": ""
+  "version": 6,
+  "weekStart": "monday"
 }
