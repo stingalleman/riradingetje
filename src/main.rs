@@ -82,18 +82,7 @@ async fn main() {
         // stroom 1 = daluren
         // stroom 2 = piekuren
 
-        // indicator[0] = niks
-        // indicator[1] = daltarief
-        // indicator[2] = piektarief
-        println!("{:?}", tariff_indicator);
-        let tariff: u8;
-        // if tariff_indicator[1] == 1 {
-        //     tariff = 1;
-        // } else if tariff_indicator[2] == 1 {
-        //     tariff = 2;
-        // } else {
-        tariff = 0;
-        // }
+        let tariff: u8 = tariff_indicator[1];
 
         let gas_timestamp = utils::convert_tst(state.slaves[0].meter_reading.unwrap().0).unwrap();
 
